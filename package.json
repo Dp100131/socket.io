@@ -1,0 +1,17 @@
+{
+  "name": "socket.io",
+  "version": "1.0.0",
+  "description": "curso-socket-io",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dp011031",
+  "license": "ISC",
+  "dependencies": {
+    "bufferutil": "4.0.8",
+    "express": "4.19.2",
+    "socket.io": "4.7.5",
+    "utf-8-validate": "5.0.10"
+  }
+}
