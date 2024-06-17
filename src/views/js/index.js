@@ -1,21 +1,29 @@
-const text = document.getElementById('text');
-const emit = document.getElementById('emit-to-server');
-const emitToLast = document.getElementById('emit-to-last');
-const textLast = document.getElementById('text-last');
 const socket = io();
 
-socket.on('welcome', data => {
-  text.textContent = data;
+const circle = document.getElementById('circle');
+
+const drawCircle = position => {
+  circle.style.top = position.top;
+  circle.style.left = position.left;
+};
+
+const drag = e => {
+  const position = {
+    top: e.clientY + 'px',
+    left: e.clientX + 'px',
+  };
+  drawCircle(position);
+  socket.emit('circle_position', position);
+};
+
+circle.addEventListener('mousedown', e => {
+  document.addEventListener('mousemove', drag);
 });
 
-emit.addEventListener('click', () => {
-  socket.emit('server', 'Hello servidor 👀');
+document.addEventListener('mouseup', e => {
+  document.removeEventListener('mousemove', drag);
 });
 
-emitToLast.addEventListener('click', () => {
-  socket.emit('last', `Hello from socket ${socket.id}`);
-});
-
-socket.on('salute', data => {
-  textLast.textContent = data;
+socket.on('move_circle', position => {
+  drawCircle(position);
 });
