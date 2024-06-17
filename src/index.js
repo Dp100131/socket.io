@@ -8,21 +8,24 @@ const io = new Server(httpServer);
 
 app.use(express.static('src/views'));
 
+const socketOnline = [];
+
 app.get('/', (req, res) => {
   res.sendFile('src/views/index.html');
 });
 
 io.on('connection', socket => {
-  console.log({ clientsCount: io.engine.clientsCount });
-  console.log({ id: socket.id });
-  socket.on('disconnect', () => {
-    console.log({ id: socket.id, message: 'disconnect' });
+  socketOnline.push(socket.id);
+  // Emisión básica
+  socket.emit('welcome', 'Ahora estás conectado 😎.');
+
+  socket.on('server', data => {
+    console.log(data);
   });
-  socket.conn.once('upgrade', () => {
-    console.log(
-      'Hemos pasado de HTTP Long-polling a',
-      socket.conn.transport.name
-    );
+
+  socket.on('last', message => {
+    const last = socketOnline[socketOnline.length - 1];
+    io.to(last).emit('salute', message);
   });
 });
 

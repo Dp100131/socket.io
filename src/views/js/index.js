@@ -1,27 +1,21 @@
+const text = document.getElementById('text');
+const emit = document.getElementById('emit-to-server');
+const emitToLast = document.getElementById('emit-to-last');
+const textLast = document.getElementById('text-last');
 const socket = io();
 
-function checkSocketStatus() {
-  console.log('Estado del socket', socket.connected);
-}
-
-socket.on('connect', () => {
-  console.log('El socket se ha conectado', socket.id);
-  checkSocketStatus();
+socket.on('welcome', data => {
+  text.textContent = data;
 });
 
-socket.on('disconnect', () => {
-  console.log('El socket se ha desconectado', socket.id);
-  checkSocketStatus();
+emit.addEventListener('click', () => {
+  socket.emit('server', 'Hello servidor 👀');
 });
 
-socket.io.on('reconnect_attempt', () => {
-  console.log('Estoy intentando reconectarme. ❌');
+emitToLast.addEventListener('click', () => {
+  socket.emit('last', `Hello from socket ${socket.id}`);
 });
 
-socket.io.on('reconnect', () => {
-  console.log('Me he vuelto a conectar. ✅');
-});
-
-socket.on('connect_error', () => {
-  console.error('No pude conectarme. ☹');
+socket.on('salute', data => {
+  textLast.textContent = data;
 });
