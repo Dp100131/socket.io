@@ -7,7 +7,16 @@
     <title>Express 🤝🏽 Socket.io</title>
   </head>
   <body>
-    <div id="circle"></div>
+    <main>
+      <ul class="room" id="room1"></ul>
+      <ul class="room" id="room2"></ul>
+      <ul class="room" id="room3"></ul>
+      <button id="connectRoom1">Room 1</button>
+      <button id="connectRoom2">Room 2</button>
+      <button id="connectRoom3">Room 3</button>
+      <br />
+      <button id="sendMessage">Enviar</button>
+    </main>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./js/index.js"></script>
   </body>

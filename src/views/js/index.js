@@ -1,29 +1,34 @@
 const socket = io();
 
-const circle = document.getElementById('circle');
+// Selecciono los 3 bonotes
 
-const drawCircle = position => {
-  circle.style.top = position.top;
-  circle.style.left = position.left;
-};
+const connectRoom1 = document.getElementById('connectRoom1');
+const connectRoom2 = document.getElementById('connectRoom2');
+const connectRoom3 = document.getElementById('connectRoom3');
 
-const drag = e => {
-  const position = {
-    top: e.clientY + 'px',
-    left: e.clientX + 'px',
-  };
-  drawCircle(position);
-  socket.emit('circle_position', position);
-};
-
-circle.addEventListener('mousedown', e => {
-  document.addEventListener('mousemove', drag);
+// Room management
+connectRoom1.addEventListener('click', () => {
+  socket.emit('connect_to_room', 'room1');
+});
+connectRoom2.addEventListener('click', () => {
+  socket.emit('connect_to_room', 'room2');
+});
+connectRoom3.addEventListener('click', () => {
+  socket.emit('connect_to_room', 'room3');
 });
 
-document.addEventListener('mouseup', e => {
-  document.removeEventListener('mousemove', drag);
+// sendMessage
+const sendMessage = document.getElementById('sendMessage');
+
+sendMessage.addEventListener('click', () => {
+  const message = prompt('Escribe tu mensaje');
+  socket.emit('message', message);
 });
 
-socket.on('move_circle', position => {
-  drawCircle(position);
+// Recibir el evento del mensaje:
+socket.on('message', data => {
+  const { room, message } = data;
+  const li = document.createElement('li');
+  li.textContent = message;
+  document.getElementById(room).append(li);
 });
