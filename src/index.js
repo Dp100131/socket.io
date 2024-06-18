@@ -13,7 +13,9 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', socket => {
-  socket.on('is_connected', message => console.log(message));
+  socket.on('circle_position', position => {
+    socket.broadcast.emit('move_circle', position);
+  });
 });
 
 httpServer.listen(PORT, () => {
