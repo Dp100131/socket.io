@@ -1,40 +1,17 @@
-const user = prompt('Escribe tu usuario');
+const socket = io();
 
-const teachers = ['Daniel', 'Juan', 'GNDX'];
+const send = document.getElementById('send');
+const disconnected = document.getElementById('disconnected');
+const reconnected = document.getElementById('reconnected');
 
-let socketNamespace, group;
-
-const chat = document.getElementById('chat');
-const namespace = document.getElementById('namespace');
-
-if (teachers.includes(user)) {
-  socketNamespace = io('/teachers');
-  group = 'teachers';
-} else {
-  socketNamespace = io('/students');
-  group = 'students';
-}
-
-socketNamespace.on('connect', () => {
-  namespace.textContent = group;
+send.addEventListener('click', () => {
+  if (socket.connected) socket.emit('is_connected', '¡Está conectado!');
 });
 
-// Lógica de envío de mensajes
-
-const sendMessage = document.getElementById('sendMessage');
-
-sendMessage.addEventListener('click', () => {
-  const message = prompt('Escribe tu mensaje:');
-
-  socketNamespace.emit('send_message', {
-    message,
-    user,
-  });
+disconnected.addEventListener('click', () => {
+  socket.disconnect();
 });
 
-socketNamespace.on('message', data => {
-  const { user, message } = data;
-  const li = document.createElement('li');
-  li.textContent = `${user}: ${message}`;
-  chat.append(li);
+reconnected.addEventListener('click', () => {
+  socket.connect();
 });
