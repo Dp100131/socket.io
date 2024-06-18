@@ -12,10 +12,24 @@ app.get('/', (req, res) => {
   res.sendFile('src/views/index.html');
 });
 
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token;
+
+  if (token === 'myToken') {
+    next();
+  } else {
+    const err = new Error('No puedes pasar 🤬');
+
+    err.data = {
+      message: 'No pudiste ser autenticado.',
+    };
+
+    next(err);
+  }
+});
+
 io.on('connection', socket => {
-  socket.on('circle_position', position => {
-    socket.broadcast.emit('move_circle', position);
-  });
+  console.log({ id: socket.id });
 });
 
 httpServer.listen(PORT, () => {
