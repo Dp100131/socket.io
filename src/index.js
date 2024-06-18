@@ -1,37 +1,27 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-const PORT = 3000;
+import { realTimeServer } from './realTimeServer.js';
+import { router } from './routes/index.js';
+import cookieParser from 'cookie-parser';
+
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
-app.use(express.static('src/views'));
+// Settings
+app.set('port', process.env.PORT || 3000);
+app.use(cookieParser());
+// Routes
+app.use(router);
 
-app.get('/', (req, res) => {
-  res.sendFile('src/views/index.html');
+// Public
+app.use(express.static('src/public'));
+
+// Run server
+httpServer.listen(app.get('port'), () => {
+  console.log(`Running: http://localhost:3000/`);
 });
 
-io.use((socket, next) => {
-  const token = socket.handshake.auth.token;
-
-  if (token === 'myToken') {
-    next();
-  } else {
-    const err = new Error('No puedes pasar 🤬');
-
-    err.data = {
-      message: 'No pudiste ser autenticado.',
-    };
-
-    next(err);
-  }
-});
-
-io.on('connection', socket => {
-  console.log({ id: socket.id });
-});
-
-httpServer.listen(PORT, () => {
-  console.log(`Revisar en el servidor: http://localhost:3000/`);
-});
+// Socket.io server
+realTimeServer(httpServer);
