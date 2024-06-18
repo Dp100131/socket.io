@@ -15,6 +15,8 @@ app.get('/', (req, res) => {
 io.on('connection', socket => {
   socket.connectedRoom = '';
 
+  socket.leave(socket.connectedRoom);
+
   socket.on('connect_to_room', roomId => {
     switch (roomId) {
       case 'room1':
