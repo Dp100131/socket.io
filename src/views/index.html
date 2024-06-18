@@ -4,10 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/chat.css" />
     <title>Colab AI Chat</title>
   </head>
   <body>
-    <main><h1>App realtime</h1></main>
+    <header>
+      <h1>Colab Chat</h1>
+    </header>
+    <main>
+      <div id="all-messages"></div>
+
+      <div class="send-message">
+        <input type="text" id="message" />
+        <button type="button" id="send-message" class="btn secondary">
+          Enviar
+        </button>
+      </div>
+    </main>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/index.js"></script>
   </body>

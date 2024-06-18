@@ -3,6 +3,12 @@ export const realTimeServer = httpServer => {
   const io = new Server(httpServer);
 
   io.on('connection', socket => {
-    console.log({ id: socket.id });
+    const username = socket.handshake.headers.cookie.split('=').pop();
+    socket.on('message', message => {
+      io.emit('message', {
+        user: username,
+        message,
+      });
+    });
   });
 };
