@@ -1,38 +1,40 @@
-const socket = io();
+const user = prompt('Escribe tu usuario');
 
-// Selecciono mis 3 botones que me permitirán conectarme a las salas
-const connectRoom1 = document.getElementById('connectRoom1');
-const connectRoom2 = document.getElementById('connectRoom2');
-const connectRoom3 = document.getElementById('connectRoom3');
+const teachers = ['Daniel', 'Juan', 'GNDX'];
 
-// Eventos para que al hacer click me conecte a las salas
+let socketNamespace, group;
 
-connectRoom1.addEventListener('click', () => {
-  socket.emit('connect_to_room', 'room1');
+const chat = document.getElementById('chat');
+const namespace = document.getElementById('namespace');
+
+if (teachers.includes(user)) {
+  socketNamespace = io('/teachers');
+  group = 'teachers';
+} else {
+  socketNamespace = io('/students');
+  group = 'students';
+}
+
+socketNamespace.on('connect', () => {
+  namespace.textContent = group;
 });
 
-connectRoom2.addEventListener('click', () => {
-  socket.emit('connect_to_room', 'room2');
-});
-
-connectRoom3.addEventListener('click', () => {
-  socket.emit('connect_to_room', 'room3');
-});
-
-// Enviar mensaje
+// Lógica de envío de mensajes
 
 const sendMessage = document.getElementById('sendMessage');
 
 sendMessage.addEventListener('click', () => {
   const message = prompt('Escribe tu mensaje:');
 
-  socket.emit('message', message);
+  socketNamespace.emit('send_message', {
+    message,
+    user,
+  });
 });
 
-// Recibir el evento del mensaje
-socket.on('send_message', data => {
-  const { room, message } = data;
+socketNamespace.on('message', data => {
+  const { user, message } = data;
   const li = document.createElement('li');
-  li.textContent = message;
-  document.getElementById(room).append(li);
+  li.textContent = `${user}: ${message}`;
+  chat.append(li);
 });
